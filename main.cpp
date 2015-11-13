@@ -163,14 +163,16 @@ void Tree::delete_node(Node* n, int leaf)
              delete n;
           }else if ( n->Left() != NULL && n->Right() == NULL )
           {
-             Node* temp = n->Left();
+             Node temp = *n->Left();
              delete n->Left();
              n = temp;
+             n->setLeft(NULL);
           }else if ( n->Left() == NULL && n->Right() != NULL )
           {
-             Node* temp = n->Right();
+             Node temp = *n->Right();
              delete n->Right();
              n = temp;
+             n->setRight(NULL);
           }else
           {
              Node* temp = lowest(n->Right());
