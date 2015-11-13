@@ -1,3 +1,17 @@
+/*****************************************************************************
+   Taylor Hoss
+   X432Z869
+   Program #10
+
+   This is a program that implements a binary search tree. The data structure
+   for the tree contains a phone number and a name. The phone number is 
+   used as the key for searching the tree. You can add and delete entries
+   as well as search to see if an entry exists and printing the tree in
+   ascending numerical order by phone number. On quit the program outputs
+   the tree in pre-order to a file. 
+   
+*****************************************************************************/
+
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -139,7 +153,8 @@ void Tree::search_bst(Node* n, int leaf)
       }else
       {
          contact key = n->Key();
-         cout<<"\n"<<key.name<<" found under phone number: "<<key.phoneNumber<<".\n";
+         cout<<"\n"<<key.name<<" found under phone number: "
+             <<key.phoneNumber<<".\n";
       }  
    }
 }
@@ -190,6 +205,7 @@ Node* Tree::delete_node(Node* n, int leaf)
     return n;
 }
 
+//finds the lowest node in the subtree sent to it
 Node* Tree::lowest(Node* n)
 {
    if ( n->Left() != NULL )
@@ -223,12 +239,13 @@ void Tree::preOrder(Node* n)
     {
        //writting to file
        ofstream out_file;
-       out_file.open("tree.dat");
+       out_file.open("tree.dat", ios_base::app);
        if(out_file.fail())
        { cout<<"Could not open file. Terminating program.\n"; }
        else
        {
-          out_file<<"Name: "<<n->KeyName()<<" \nPhone Number: "<<n->KeyPN()<<" \n";
+          out_file<<"Name: "<<n->KeyName()<<" \r\nPhone Number: "
+                  <<n->KeyPN()<<" \r\n";
        }
        out_file.close();
        
@@ -245,6 +262,16 @@ int main()
    contact newContact;
 
    Tree* tree = new Tree();
+
+   //clearing file at startup
+   ofstream out_file;
+   out_file.open( "tree.dat" );
+   if ( out_file.fail() )
+   { cout<<"Could not open file. Terminating program.\n"; }
+   else { out_file<<""; }
+   out_file.close();
+
+
 
    while(choice != 5)
    {
@@ -298,7 +325,7 @@ int main()
    
       if(choice == 5)
       {
-         cout<<"Terminating program and saving tree to file tree.dat in pre-order";
+         cout<<"Terminating program and saving tree to file tree.dat";
 
          tree->preOrder( tree->Root() );
          cout<<endl;
@@ -313,4 +340,3 @@ int main()
    delete tree;
    return 0;
 }
-
