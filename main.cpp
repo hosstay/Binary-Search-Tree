@@ -42,7 +42,7 @@ public:
      void addNode(contact key);
      void inOrder(Node* n);
      void preOrder(Node* n);
-     void delete_node(Node* n, int leaf);
+     Node* delete_node(Node* n, int leaf);
      void search_bst(Node* n, int leaf);
      Node* lowest(Node* n);
 private:
@@ -145,42 +145,49 @@ void Tree::search_bst(Node* n, int leaf)
 }
 
 // Free a single node and move the rest of the tree into form
-void Tree::delete_node(Node* n, int leaf)
+Node* Tree::delete_node(Node* n, int leaf)
 {
-    if ( n != NULL )
-   {      
-      if ( leaf < n->KeyPN() )
-      {
-         delete_node( n->Left(), leaf);
-      }else if ( leaf > n->KeyPN() )
-      {
-         delete_node( n->Right(), leaf);
-      }else
-      {
-          if ( n->Left() == NULL && n->Right() == NULL )
-          {
-             cout<<"\n"<<n->KeyName()<<" deleted.\n";
-             delete n;
-          }else if ( n->Left() != NULL && n->Right() == NULL )
-          {
-             Node temp = *n->Left();
-             delete n->Left();
-             n = temp;
-             n->setLeft(NULL);
-          }else if ( n->Left() == NULL && n->Right() != NULL )
-          {
-             Node temp = *n->Right();
-             delete n->Right();
-             n = temp;
-             n->setRight(NULL);
-          }else
-          {
-             Node* temp = lowest(n->Right());
-             n->Key() = temp->Key();
-             delete_node( n->Right(), temp->KeyPN() );
-          }
-      }
-   }
+    if ( n == NULL )
+    { 
+      return NULL;
+    }
+    if ( leaf == n->KeyPN() )
+    {
+        if ( n->Left() == NULL && n->Right() == NULL )
+        {
+           cout<<"\n"<<n->KeyName()<<" deleted.\n";
+           delete n;
+           return NULL;
+        }else if ( n->Left() != NULL && n->Right() == NULL )
+        {
+           Node* temp = n->Left();
+           cout<<"\n"<<n->KeyName()<<" deleted.\n";
+           delete n;
+           return temp;
+        }else if ( n->Left() == NULL && n->Right() != NULL )
+        {
+           Node* temp = n->Right();
+           cout<<"\n"<<n->KeyName()<<" deleted.\n";
+           delete n;
+           return temp;
+        }else
+        {
+           Node* temp = lowest(n->Right());
+           n->Key() = temp->Key();
+           n->setRight( delete_node( n->Right(), temp->KeyPN() ) );
+           return n;
+        }
+    }else if ( leaf < n->KeyPN() )
+    {
+       n->setLeft( delete_node( n->Left(), leaf) );
+       return n;
+    }else if ( leaf > n->KeyPN() )
+    {
+       n->setRight( delete_node( n->Right(), leaf) );
+       return n;
+    }
+
+    return n;
 }
 
 Node* Tree::lowest(Node* n)
